@@ -4,6 +4,8 @@ import shutil
 # Путь к папке Downloads
 downloads_folder = os.path.join(os.environ["HOME"], "Downloads")
 
+
+
 # Словарь с соответствиями расширений и папок назначения
 extensions = {
     "txt": os.path.join(os.environ["HOME"], "Documents"),
@@ -85,17 +87,30 @@ extensions = {
 
 files = os.listdir(downloads_folder)
 
-# Перебор файлов и их перемещение
-for file in files:
-    file_path = os.path.join(downloads_folder, file)
-    if os.path.isfile(file_path):
-        file_extension = file.split(".")[-1].lower()
-        if file_extension in extensions:
-            destination_folder = extensions[file_extension]
-            # Создание папки назначения, если она не существует
-            os.makedirs(destination_folder, exist_ok=True)
-            destination_path = os.path.join(destination_folder, file)
-            shutil.move(file_path, destination_path)
-            print(f"Перемещен файл {file} в {destination_folder}")
+# Используется для подсчёта количество перемещённых файлов
+movedfile = 0
 
-print("Все файлы перемещены.")
+# Перебор файлов и их перемещение
+try:
+    for file in files:
+        file_path = os.path.join(downloads_folder, file)
+        if os.path.isfile(file_path):
+            file_extension = file.split(".")[-1].lower()
+            if file_extension in extensions:
+                destination_folder = extensions[file_extension]
+                # Создание папки назначения, если она не существует
+                os.makedirs(destination_folder, exist_ok=True)
+                destination_path = os.path.join(destination_folder, file)
+                shutil.move(file_path, destination_path)
+                print(f"Перемещен файл {file} в {destination_folder}")
+                if destination_folder is not None:
+                    movedfile += 1
+    if movedfile == 0:
+        print("Файлов для перемещения не найдено")
+    else:
+        print("Все файлы перемещены.")
+    print(f"Количество перемещённых файлов: {movedfile}")
+    
+except:
+    print("Произошла какае-то ошибка на этапе перебора и перемещения файлов, скрипт остановлен!")
+    
